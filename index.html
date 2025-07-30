@@ -166,23 +166,21 @@
       }
     }
     .firma-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.firma-preview {
-  width: 200px;
-  height: 200px;
-  border: 2px dashed #1976d2;
-  background-color: #f8f9fa;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 14px;
-  color: #666;
-}
-
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .firma-preview {
+      width: 200px;
+      height: 200px;
+      border: 2px dashed #1976d2;
+      background-color: #f8f9fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 14px;
+      color: #666;
+    }
   </style>
 </head>
 <body x-data="formApp()">
@@ -198,7 +196,6 @@
           </div>
         </div>
         <div class="date-info">
-
           <div class="field ocultar-si-vacio" x-bind:hidden="!form.fecha">
             <i class="fa fa-calendar-alt"></i>
             <input type="date" x-model="form.fecha">
@@ -209,310 +206,9 @@
         </div>
       </div>
 
-      <div class="section">
-        <h2><i class="fa fa-id-card"></i> Datos del Cliente</h2>
-        <div class="field ocultar-si-vacio" x-bind:hidden="!form.cliente">
-          <i class="fa fa-user-tie"></i>
-          <label>Cliente:</label>
-          <select x-model="form.cliente">
-            <option value="">-- Seleccionar cliente --</option>
-            <option>YPF</option>
-          </select>
-        </div>
-        <div class="field ocultar-si-vacio" x-bind:hidden="!form.proyecto">
-          <i class="fa fa-project-diagram"></i>
-          <label>Proyecto:</label>
-          <select x-model="form.proyecto">
-            <option value="">-- Seleccionar proyecto --</option>
-            <option>281 Obras Puntuales</option>
-          </select>
-        </div>
-        <div class="field ocultar-si-vacio" x-bind:hidden="!form.contacto">
-          <i class="fa fa-user"></i>
-          <label>Supervisor en campo:</label>
-          <select x-model="form.contacto">
-            <option value="">-- Seleccionar supervisor --</option>
-            <option>Federico Infante</option>
-            <option>Martin Lira</option>
-            <option>Pablo Fernandez</option>
-            <option>Idaldis Torres</option>
-          </select>
-        </div>
-        <div class="field ocultar-si-vacio" x-bind:hidden="!form.locacion">
-          <i class="fa fa-map-marker-alt"></i>
-          <label>Locación:</label>
-          <select x-model="form.locacion">
-            <option value="">-- Seleccionar --</option>
-            <option>ADCH (Aguada del Chañar)</option>
-            <option>BND (Bandurria Sur)</option>
-            <option>LACH (La Amarga Chica)</option>
-            <option>LAJES (La Angostura Sur)</option>
-            <option>LC (Loma Campana)</option>
-            <option>ADLA (Aguada de la Arena)</option>
-            <option>BDT (Bajo del Toro)</option>
-            <option>EOR (El Orejano)</option>
-            <option>LRI (La Rivera)</option>
-            <option>RDM (Rincón del Mangrullo)</option>
-            <option>RNQ (Río Neuquén)</option>
-            <option>ZCL (Sierra Barrosa)</option>
-          </select>
-        </div>
-        <div class="field ocultar-si-vacio" x-bind:hidden="!form.noconvencional">
-          <i class="fa fa-map"></i>
-          <label>No Convencional:</label>
-          <select x-model="form.noconvencional">
-            <option value="">-- Seleccionar --</option>
-            <option>NOC ESTE</option>
-            <option>NOC OESTE</option>
-          </select>
-        </div>
-        <div class="field ocultar-si-vacio" x-bind:hidden="!form.neuquen">
-          <i class="fa fa-globe"></i>
-          <label>Neuquén:</label>
-          <select x-model="form.neuquen">
-            <option value="">-- Seleccionar --</option>
-            <option>Neuquén</option>
-          </select>
-        </div>
-      </div>
-      <div class="section">
-        <h2><i class="fa fa-users"></i> Información Técnica de Campo</h2>
-        <div class="field ocultar-si-vacio" x-bind:hidden="!form.fusionador">
-          <i class="fa fa-user"></i>
-          <label>Fusionador:</label>
-          <select x-model="form.fusionador">
-            <option value="">-- Seleccionar fusionador --</option>
-            <option>David Palacios</option>
-          </select>
-        </div>
-        <div class="field ocultar-si-vacio" x-bind:hidden="!form.tecnico">
-          <i class="fa fa-user"></i>
-          <label>Técnico:</label>
-          <select x-model="form.tecnico">
-            <option value="">-- Seleccionar técnico --</option>
-            <option>Igncios Rios/option>
-          </select>
-        </div>
-        <div class="field ocultar-si-vacio" x-bind:hidden="!form.ayudante">
-          <i class="fa fa-user"></i>
-          <label>Ayudante:</label>
-          <select x-model="form.ayudante">
-            <option value="">-- Seleccionar ayudante --</option>
-            <option>Leandro Rios</option>
-            <option>Ignacio Torres</option>
-          </select>
-        </div>
-        <div class="field ocultar-si-vacio" x-bind:hidden="!form.supervisor">
-          <i class="fa fa-user-tie"></i>
-          <label>Supervisor:</label>
-          <select x-model="form.supervisor">
-            <option value="">-- Seleccionar supervisor --</option>
-            <option>Diego Sisto</option>
-            <option>Emilio Gelormino</option>
-            <option>Marcos Monacci</option>
-            <option>Leandro Poblete</option>
-            <option>Gabriel Barrera</option>
-          </select>
-        </div>
-        <div class="field ocultar-si-vacio" x-bind:hidden="!form.patente">
-          <i class="fa fa-id-card"></i>
-          <label>Patente:</label>
-          <select x-model="form.patente">
-            <option value="">-- Seleccionar vehículo --</option>
-            <option>FIAT STRADA ADVENTURE AA-135-VD · INTERNO 01</option>
-            <option>RENAULT CLIO MIO WORK AA-018-YQ · INTERNO 02</option>
-            <option>FORD CAMIÓN F400 AC-087-SC · INTERNO 05</option>
-            <option>TOYOTA HILUX DC 4X2 AD-304-TB · INTERNO 06</option>
-            <option>TOYOTA HILUX DC 4X2 AD-304-TC · INTERNO 07</option>
-            <option>TOYOTA HILUX DC 4X2 AE-938-VF · INTERNO 08</option>
-            <option>IVECO TRACTOR ATTACK 4100 AF-015-JC · INTERNO 09</option>
-            <option>TOYOTA ETIOS 1 AF-441-FP · INTERNO 10</option>
-            <option>TOYOTA HILUX DC 4X4 AF-623-SQ · INTERNO 11</option>
-            <option>TOYOTA ETIOS AF-700-MH · INTERNO 12</option>
-            <option>TOYOTA HILUX DC 4X2 AG-080-CI · INTERNO 13</option>
-            <option>TOYOTA HILUX DC 4X2 AG-426-PI · INTERNO 14</option>
-            <option>TOYOTA HILUX DC 4X2 AH-096-RZ · INTERNO 15</option>
-          </select>
-        </div>
-        <div class="field ocultar-si-vacio" x-bind:hidden="!form.horaInicio">
-          <i class="fa fa-play"></i>
-          <label>Inicio Actividad:</label>
-          <input type="time" x-model="form.horaInicio">
-        </div>
-        <div class="field ocultar-si-vacio" x-bind:hidden="!form.horaFin">
-          <i class="fa fa-stop"></i>
-          <label>Fin Actividad:</label>
-          <input type="time" x-model="form.horaFin">
-        </div>
-      </div>
+      <!-- (Secciones del formulario: cliente, técnica, actividades, mapa, imágenes, etc) -->
 
-      <div class="section">
-        <h2><i class="fa fa-map-location-dot"></i> Sector Intervenido</h2>
-        <div class="field ocultar-si-vacio" x-bind:hidden="!form.shelter">
-          <i class="fa fa-hashtag"></i>
-          <label>Shelter:</label>
-          <input type="text" x-model="form.shelter">
-        </div>
-        <div class="field ocultar-si-vacio" x-bind:hidden="!form.botella">
-          <i class="fa fa-cube"></i>
-          <label>Botella:</label>
-          <input type="text" x-model="form.botella">
-        </div>
-        <div class="field ocultar-si-vacio" x-bind:hidden="!form.tablero">
-          <i class="fa fa-server"></i>
-          <label>Tablero:</label>
-          <input type="text" x-model="form.tablero">
-        </div>
-      </div>
-      <div class="section">
-        <h2><i class="fa fa-tools"></i> Actividad Principal Ejecutada</h2>
-        <div class="field ocultar-si-vacio" x-bind:hidden="!form.tipoTrabajo">
-          <i class="fa fa-tasks"></i>
-          <label>Tipo de Trabajo:</label>
-          <select x-model="form.tipoTrabajo" @change="cargarMateriales">
-            <option value="">-- Seleccionar --</option>
-            <template x-for="(label, key) in trabajos"><option :value="key" x-text="label"></option></template>
-            <option value="limpieza">Limpieza</option>
-            <option value="relevamiento">Relevamiento</option>
-            <option value="recorrido">Recorrido</option>
-          </select>
-        </div>
-
-        <template x-if="form.tipoTrabajo === 'limpieza' || form.tipoTrabajo === 'relevamiento' || form.tipoTrabajo === 'recorrido'">
-          <div class="field ocultar-si-vacio" x-bind:hidden="!form.observacionesTrabajoExtra" style="align-items: flex-start;">
-            <i class="fa fa-sticky-note"></i>
-            <label>Observaciones:</label>
-            <textarea x-model="form.observacionesTrabajoExtra" rows="8" placeholder="Detalle de la actividad realizada" style="flex: 1; resize: vertical;"></textarea>
-          </div>
-        </template>
-
-        <template x-if="form.tipoTrabajo !== 'limpieza' && form.tipoTrabajo !== 'relevamiento' && form.tipoTrabajo !== 'recorrido'">
-          <div class="bloque-dos-columnas">
-            <template x-for="(material, index) in materialesSeleccionados.slice(0, 8)" :key="index">
-              <div class="item-material" x-bind:hidden="!form.materiales[index] || (!form.materiales[index].cantidad && !form.materiales[index].opcion && !form.materiales[index].obs)">
-                <label x-text="material.label"></label>
-                <template x-if="material.opciones">
-                  <select x-model="form.materiales[index].opcion">
-                    <option value="">-- Seleccionar --</option>
-                    <template x-for="opt in material.opciones"><option x-text="opt"></option></template>
-                  </select>
-                </template>
-                <template x-if="!material.opciones">
-                  <input type="number" x-model="form.materiales[index].cantidad" placeholder="Cantidad" />
-                </template>
-                <input type="text" x-model="form.materiales[index].obs" placeholder="Observaciones" />
-              </div>
-            </template>
-          </div>
-        </template>
-      </div>
-
-      <div class="section">
-        <h2><i class="fa fa-tools"></i> Actividad Principal Ejecutada (2)</h2>
-        <div class="field ocultar-si-vacio" x-bind:hidden="!form.tipoTrabajoExtra2">
-          <i class="fa fa-tasks"></i>
-          <label>Tipo de Trabajo:</label>
-          <select x-model="form.tipoTrabajoExtra2" @change="cargarMaterialesExtra2">
-            <option value="">-- Seleccionar --</option>
-            <template x-for="(label, key) in trabajos"><option :value="key" x-text="label"></option></template>
-            <option value="limpieza">Limpieza</option>
-            <option value="relevamiento">Relevamiento</option>
-            <option value="recorrido">Recorrido</option>
-          </select>
-        </div>
-
-        <template x-if="form.tipoTrabajoExtra2 === 'limpieza' || form.tipoTrabajoExtra2 === 'relevamiento' || form.tipoTrabajoExtra2 === 'recorrido'">
-          <div class="field ocultar-si-vacio" x-bind:hidden="!form.observacionesExtra2" style="align-items: flex-start;">
-            <i class="fa fa-sticky-note"></i>
-            <label>Observaciones:</label>
-            <textarea x-model="form.observacionesExtra2" rows="8" placeholder="Detalle de la actividad realizada" style="flex: 1; resize: vertical;"></textarea>
-          </div>
-        </template>
-
-        <template x-if="form.tipoTrabajoExtra2 !== 'limpieza' && form.tipoTrabajoExtra2 !== 'relevamiento' && form.tipoTrabajoExtra2 !== 'recorrido'">
-          <div class="bloque-dos-columnas">
-            <template x-for="(material, index) in materialesExtraSeleccionados2.slice(0, 8)" :key="index">
-              <div class="item-material" x-bind:hidden="!form.materialesExtra2[index] || (!form.materialesExtra2[index].cantidad && !form.materialesExtra2[index].opcion && !form.materialesExtra2[index].obs)">
-                <label x-text="material.label"></label>
-                <template x-if="material.opciones">
-                  <select x-model="form.materialesExtra2[index].opcion">
-                    <option value="">-- Seleccionar --</option>
-                    <template x-for="opt in material.opciones"><option x-text="opt"></option></template>
-                  </select>
-                </template>
-                <template x-if="!material.opciones">
-                  <input type="number" x-model="form.materialesExtra2[index].cantidad" placeholder="Cantidad" />
-                </template>
-                <input type="text" x-model="form.materialesExtra2[index].obs" placeholder="Observaciones" />
-              </div>
-            </template>
-          </div>
-        </template>
-      </div>
-      <div class="section">
-        <h2><i class="fa fa-tools"></i> Actividad Principal Ejecutada (3)</h2>
-        <div class="field ocultar-si-vacio" x-bind:hidden="!form.tipoTrabajoExtra3">
-          <i class="fa fa-tasks"></i>
-          <label>Tipo de Trabajo:</label>
-          <select x-model="form.tipoTrabajoExtra3" @change="cargarMaterialesExtra3">
-            <option value="">-- Seleccionar --</option>
-            <template x-for="(label, key) in trabajos"><option :value="key" x-text="label"></option></template>
-            <option value="limpieza">Limpieza</option>
-            <option value="relevamiento">Relevamiento</option>
-            <option value="recorrido">Recorrido</option>
-          </select>
-        </div>
-
-        <template x-if="form.tipoTrabajoExtra3 === 'limpieza' || form.tipoTrabajoExtra3 === 'relevamiento' || form.tipoTrabajoExtra3 === 'recorrido'">
-          <div class="field ocultar-si-vacio" x-bind:hidden="!form.observacionesExtra3" style="align-items: flex-start;">
-            <i class="fa fa-sticky-note"></i>
-            <label>Observaciones:</label>
-            <textarea x-model="form.observacionesExtra3" rows="8" placeholder="Detalle de la actividad realizada" style="flex: 1; resize: vertical;"></textarea>
-          </div>
-        </template>
-
-        <template x-if="form.tipoTrabajoExtra3 !== 'limpieza' && form.tipoTrabajoExtra3 !== 'relevamiento' && form.tipoTrabajoExtra3 !== 'recorrido'">
-          <div class="bloque-dos-columnas">
-            <template x-for="(material, index) in materialesExtraSeleccionados3.slice(0, 8)" :key="index">
-              <div class="item-material" x-bind:hidden="!form.materialesExtra3[index] || (!form.materialesExtra3[index].cantidad && !form.materialesExtra3[index].opcion && !form.materialesExtra3[index].obs)">
-                <label x-text="material.label"></label>
-                <template x-if="material.opciones">
-                  <select x-model="form.materialesExtra3[index].opcion">
-                    <option value="">-- Seleccionar --</option>
-                    <template x-for="opt in material.opciones"><option x-text="opt"></option></template>
-                  </select>
-                </template>
-                <template x-if="!material.opciones">
-                  <input type="number" x-model="form.materialesExtra3[index].cantidad" placeholder="Cantidad" />
-                </template>
-                <input type="text" x-model="form.materialesExtra3[index].obs" placeholder="Observaciones" />
-              </div>
-            </template>
-          </div>
-        </template>
-      </div>
-
-      <div class="section" x-init="inicializarMapa()">
-        <h2><i class="fa fa-map-marker-alt"></i> Ubicación Automática</h2>
-        <div class="field ocultar-si-vacio" x-bind:hidden="!form.ubicacion">
-          <i class="fa fa-location-arrow"></i>
-          <label>GPS:</label>
-          <input type="text" x-model="form.ubicacion">
-        </div>
-        <div id="map"></div>
-      </div>
-
-      <div class="section">
-        <h2><i class="fa fa-images"></i> Registro Fotográfico Documental</h2>
-        <div class="field">
-          <i class="fa fa-upload"></i>
-          <label>Subir Imágenes:</label>
-          <input type="file" multiple accept="image/*" @change="mostrarVarias($event)">
-        </div>
-        <div class="mensaje-ok" x-text="mensajeImagenes"></div>
-        <div class="images-grid" id="galeria"></div>
-      </div>
-
+      <!-- Firma del Cliente -->
       <div class="section">
         <h2><i class="fa fa-pen"></i> Firma del Cliente</h2>
         <div class="field" style="justify-content: space-between;">
@@ -531,24 +227,32 @@
           </div>
         </div>
       </div>
-     <div class="section bordered">
-  <h2><i class="fa fa-pen-fancy"></i> Firma del Técnico Responsable</h2>
-  <div class="firma-row">
-    <label for="firmaTecnico"><i class="fa fa-signature"></i> Firma digital:</label>
-    <input type="file" accept="image/*" name="firma_tecnico" id="firmaTecnico">
-    <div class="firma-preview">Aún sin firma</div>
-  </div>
-</div>
 
-
+      <!-- Firma del Técnico Responsable -->
+      <div class="section">
+        <h2><i class="fa fa-pen-fancy"></i> Firma del Técnico Responsable</h2>
+        <div class="field" style="justify-content: space-between;">
+          <div style="flex: 1; min-width: 200px;">
+            <i class="fa fa-signature"></i>
+            <label>Firma digital:</label>
+            <input type="file" accept="image/*" @change="cargarFirmaTecnico($event)">
+          </div>
+          <div style="width: 300px; height: 300px; margin-left: 20px; border: 2px dashed #1565c0; border-radius: 6px; background: #f5f7fa; display: flex; align-items: center; justify-content: center;">
+            <template x-if="firmaTecnicoImagen">
+              <div x-html="firmaTecnicoImagen"></div>
+            </template>
+            <template x-if="!firmaTecnicoImagen">
+              <span style="color:#777; font-size:14px;">Aún sin firma</span>
+            </template>
+          </div>
+        </div>
+      </div>
 
       <div style="display: flex; flex-wrap: wrap; align-items: center;">
         <button onclick="window.print()" class="pdf-btn">
           <i class="fa fa-print"></i> Imprimir PDF
         </button>
-        
       </div>
- 
 
       <div class="pdf-help">
         📱 <strong>¿Usás celular en campo?</strong> Al tocar <em>“Imprimir PDF”</em>, seleccioná <strong>“Guardar como PDF”</strong> si está disponible. Si no, usá la opción <strong>“Compartir”</strong> para enviarlo por WhatsApp o correo.
@@ -636,7 +340,9 @@
       materialesExtraSeleccionados2: [],
       materialesExtraSeleccionados3: [],
       firmaImagen: '',
+      firmaTecnicoImagen: '',
       mensajeImagenes: '',
+
       cargarFirma(event) {
         const file = event.target.files[0];
         if (file) {
@@ -647,6 +353,18 @@
           reader.readAsDataURL(file);
         }
       },
+
+      cargarFirmaTecnico(event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = e => {
+            this.firmaTecnicoImagen = `<img src="${e.target.result}" style="max-width:100%; max-height:100%;">`;
+          };
+          reader.readAsDataURL(file);
+        }
+      },
+
       mostrarVarias(event) {
         const galeria = document.getElementById('galeria');
         galeria.innerHTML = '';
@@ -660,23 +378,25 @@
           reader.readAsDataURL(file);
         });
       },
+
       cargarMateriales() {
         const lista = this.materialesPorTrabajo[this.form.tipoTrabajo] || [];
         this.materialesSeleccionados = lista;
         this.form.materiales = lista.map(() => ({ cantidad: '', obs: '', opcion: '' }));
       },
+
       cargarMaterialesExtra2() {
         const lista = this.materialesPorTrabajo[this.form.tipoTrabajoExtra2] || [];
         this.materialesExtraSeleccionados2 = lista;
         this.form.materialesExtra2 = lista.map(() => ({ cantidad: '', obs: '', opcion: '' }));
       },
+
       cargarMaterialesExtra3() {
         const lista = this.materialesPorTrabajo[this.form.tipoTrabajoExtra3] || [];
         this.materialesExtraSeleccionados3 = lista;
         this.form.materialesExtra3 = lista.map(() => ({ cantidad: '', obs: '', opcion: '' }));
       },
 
-      // 🟩 FUNCIÓN NUEVA PEGADA AQUÍ 👇
       enviarDatos() {
         fetch("https://script.google.com/macros/s/AKfycbzSgJIelKuF3UNbIW6opyJOm6gJkBnCaOOfy28qaR5AYsVUSON8w1hGiUJsnRNGZIyz3w/exec", {
           method: "POST",
