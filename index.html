@@ -533,13 +533,22 @@
       </div>
      <div class="section bordered">
   <h2><i class="fa fa-pen-fancy"></i> Firma del Técnico Responsable</h2>
-  <div class="firma-row">
-    <label for="firmaTecnico"><i class="fa fa-signature"></i> Firma digital:</label>
-    <input type="file" accept="image/*" name="firma_tecnico" id="firmaTecnico">
-    <div class="firma-preview">Aún sin firma</div>
-  </div>
-</div>
-
+   <div class="field" style="justify-content: space-between;">
+          <div style="flex: 1; min-width: 200px;">
+            <i class="fa fa-signature"></i>
+            <label>Firma digital:</label>
+            <input type="file" accept="image/*" @change="cargarFirma($event)">
+          </div>
+          <div style="width: 300px; height: 300px; margin-left: 20px; border: 2px dashed #1565c0; border-radius: 6px; background: #f5f7fa; display: flex; align-items: center; justify-content: center;">
+            <template x-if="firmaImagen">
+              <div x-html="firmaImagen"></div>
+            </template>
+            <template x-if="!firmaImagen">
+              <span style="color:#777; font-size:14px;">Aún sin firma</span>
+            </template>
+          </div>
+        </div>
+      </div>
 
 
       <div style="display: flex; flex-wrap: wrap; align-items: center;">
