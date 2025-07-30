@@ -513,42 +513,43 @@
         <div class="images-grid" id="galeria"></div>
       </div>
 
-      <div class="section">
-        <h2><i class="fa fa-pen"></i> Firma del Cliente</h2>
-        <div class="field" style="justify-content: space-between;">
-          <div style="flex: 1; min-width: 200px;">
-            <i class="fa fa-signature"></i>
-            <label>Firma digital:</label>
-            <input type="file" accept="image/*" @change="cargarFirma($event)">
-          </div>
-          <div style="width: 300px; height: 300px; margin-left: 20px; border: 2px dashed #1565c0; border-radius: 6px; background: #f5f7fa; display: flex; align-items: center; justify-content: center;">
-            <template x-if="firmaImagen">
-              <div x-html="firmaImagen"></div>
-            </template>
-            <template x-if="!firmaImagen">
-              <span style="color:#777; font-size:14px;">Aún sin firma</span>
-            </template>
-          </div>
-        </div>
-      </div>
-     <div class="section bordered">
+     <div class="section">
+  <h2><i class="fa fa-pen"></i> Firma del Cliente</h2>
+  <div class="field" style="justify-content: space-between;">
+    <div style="flex: 1; min-width: 200px;">
+      <i class="fa fa-signature"></i>
+      <label>Firma digital:</label>
+      <input type="file" accept="image/*" @change="cargarFirmaCliente($event)">
+    </div>
+    <div style="width: 300px; height: 300px; margin-left: 20px; border: 2px dashed #1565c0; border-radius: 6px; background: #f5f7fa; display: flex; align-items: center; justify-content: center;">
+      <template x-if="firmaCliente">
+        <div x-html="firmaCliente"></div>
+      </template>
+      <template x-if="!firmaCliente">
+        <span style="color:#777; font-size:14px;">Aún sin firma</span>
+      </template>
+    </div>
+  </div>
+</div>
+
+<div class="section bordered">
   <h2><i class="fa fa-pen-fancy"></i> Firma del Técnico Responsable</h2>
-   <div class="field" style="justify-content: space-between;">
-          <div style="flex: 1; min-width: 200px;">
-            <i class="fa fa-signature"></i>
-            <label>Firma digital:</label>
-            <input type="file" accept="image/*" @change="cargarFirma($event)">
-          </div>
-          <div style="width: 300px; height: 300px; margin-left: 20px; border: 2px dashed #1565c0; border-radius: 6px; background: #f5f7fa; display: flex; align-items: center; justify-content: center;">
-            <template x-if="firmaImagen">
-              <div x-html="firmaImagen"></div>
-            </template>
-            <template x-if="!firmaImagen">
-              <span style="color:#777; font-size:14px;">Aún sin firma</span>
-            </template>
-          </div>
-        </div>
-      </div>
+  <div class="field" style="justify-content: space-between;">
+    <div style="flex: 1; min-width: 200px;">
+      <i class="fa fa-signature"></i>
+      <label>Firma digital:</label>
+      <input type="file" accept="image/*" @change="cargarFirmaTecnico($event)">
+    </div>
+    <div style="width: 300px; height: 300px; margin-left: 20px; border: 2px dashed #1565c0; border-radius: 6px; background: #f5f7fa; display: flex; align-items: center; justify-content: center;">
+      <template x-if="firmaTecnico">
+        <div x-html="firmaTecnico"></div>
+      </template>
+      <template x-if="!firmaTecnico">
+        <span style="color:#777; font-size:14px;">Aún sin firma</span>
+      </template>
+    </div>
+  </div>
+</div>
 
 
       <div style="display: flex; flex-wrap: wrap; align-items: center;">
@@ -646,29 +647,28 @@
       materialesExtraSeleccionados3: [],
       firmaImagen: '',
       mensajeImagenes: '',
-      cargarFirma(event) {
-        const file = event.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = e => {
-            this.firmaImagen = `<img src="${e.target.result}" style="max-width:100%; max-height:100%;">`;
-          };
-          reader.readAsDataURL(file);
-        }
+           firmaCliente: null,
+      firmaTecnico: null,
+      cargarFirmaCliente(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          this.firmaCliente = `<img src="${reader.result}" style="max-width: 100%; max-height: 100%;">`;
+        };
+        reader.readAsDataURL(file);
       },
-      mostrarVarias(event) {
-        const galeria = document.getElementById('galeria');
-        galeria.innerHTML = '';
-        Array.from(event.target.files).forEach(file => {
-          const reader = new FileReader();
-          reader.onload = e => {
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            galeria.appendChild(img);
-          };
-          reader.readAsDataURL(file);
-        });
-      },
+      cargarFirmaTecnico(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          this.firmaTecnico = `<img src="${reader.result}" style="max-width: 100%; max-height: 100%;">`;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  }
       cargarMateriales() {
         const lista = this.materialesPorTrabajo[this.form.tipoTrabajo] || [];
         this.materialesSeleccionados = lista;
