@@ -534,8 +534,8 @@
             <label>Firma digital:</label>
             <input type="file" accept="image/*" @change="cargarFirma($event)">
           </div>
-          <div style="width: 300px; height: 300px; margin-left: 20px; border: 2px dashed #1565c0; border-radius: 6px; background: #f5f7fa; display: flex; align-items: center; justify-content: center;">
-            <template x-if="firmaImagen">
+          <div style="width: 210px; height: 210px; margin-left: 20px; border: 2px dashed #1565c0; border-radius: 6px; background: #f5f7fa; display: flex; align-items: center; justify-content: center;">
+
               <div x-html="firmaImagen"></div>
             </template>
             <template x-if="!firmaImagen">
@@ -554,7 +554,8 @@
             <label>Firma digital:</label>
             <input type="file" accept="image/*" @change="cargarFirmaTecnico($event)">
           </div>
-          <div style="width: 300px; height: 300px; margin-left: 20px; border: 2px dashed #1565c0; border-radius: 6px; background: #f5f7fa; display: flex; align-items: center; justify-content: center;">
+          <div style="width: 210px; height: 210px; margin-left: 20px; border: 2px dashed #1565c0; border-radius: 6px; background: #f5f7fa; display: flex; align-items: center; justify-content: center;">
+
             <template x-if="firmaTecnicoImagen">
               <div x-html="firmaTecnicoImagen"></div>
             </template>
