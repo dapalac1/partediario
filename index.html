@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parte Diario de Fibra Óptica</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 10mm 5mm;
+      background: #f5f7fa;
+      color: #333;
+    }
+    .header, .section {
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 25px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+      border: 2px solid #1565c0;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .logo {
+      max-height: 80px;
+    }
+    .section h2 {
+      display: flex;
+      align-items: center;
+      font-size: 18px;
+      color: #0d47a1;
+      border-bottom: 2px solid #0d47a1;
+      padding-bottom: 6px;
+      margin-bottom: 14px;
+    }
+    .section h2 .fa {
+      margin-right: 8px;
+    }
+    .field {
+      display: flex;
+      align-items: center;
+      margin: 10px 0;
+      flex-wrap: wrap;
+    }
+    .field i {
+      width: 25px;
+      text-align: center;
+      color: #0d47a1;
+    }
+    .field label {
+      flex: 0 0 180px;
+      font-weight: bold;
+      color: #333;
+    }
+    .field input,
+    .field select,
+    .field textarea {
+      flex: 1;
+      padding: 8px 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      background-color: #fdfdfd;
+    }
+    .header .field input {
+      font-size: 13px;
+      padding: 4px 8px;
+    }
+    #map {
+      height: 300px;
+      border-radius: 6px;
+      margin-top: 10px;
+      border: 1px solid #ddd;
+      max-width: 100%;
+      overflow: hidden;
+    }
+    .images-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    .images-grid img {
+      width: 100%;
+      height: 67.5mm;
+      object-fit: cover;
+      border-radius: 6px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .pdf-btn {
+      padding: 10px 20px;
+      background-color: #1565c0;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 10px 10px 0 0;
+    }
+    .mensaje-ok {
+      margin-top: 10px;
+      color: green;
+      font-weight: bold;
+    }
+    .pdf-help {
+      font-size: 0.95rem;
+      color: #444;
+      margin-top: 10px;
+      line-height: 1.4;
+      background: #fef9c3;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #facc15;
+    }
+    .bloque-dos-columnas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .bloque-dos-columnas .item-material {
+      flex: 0 0 48%;
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 14px;
+    }
+    .item-material label {
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+    .item-material select, .item-material input {
+      margin-bottom: 4px;
+    }
+
+    @media print {
+      .pdf-help,
+      .pdf-btn {
+        display: none;
+      }
+      .section,
+      .bloque-dos-columnas,
+      .images-grid,
+      .header,
+      #map,
+      .images-grid img {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+      .ocultar-si-vacio[hidden],
+      .item-material[hidden] {
+        display: none !important;
+      }
+      @page {
+        margin: 10mm 5mm;
+        size: A4 portrait;
+      }
+    }
+  </style>
+</head>
+<body x-data="formApp()">
+  <div id="formulario">
+    <div id="formulario-pdf">
+      <div class="header">
+        <div class="logo-wrapper" style="display: flex; flex-direction: column; align-items: flex-start;">
+          <img src="logo_empresa.png" alt="Logo Empresa" class="logo" style="margin-bottom: 4px;">
+          <div class="datos-empresa" style="line-height: 1.3; font-size: 13px; color: #333;">
+            <p style="margin: 2px 0; font-weight: bold; color: #1565c0;">Oxbeel S.R.L Oil & Gas Solutions</p>
+            <p style="margin: 2px 0;">Lago Mascardi 1499 - Parque Industrial Cipolletti, Río Negro</p>
+            <p style="margin: 2px 0;">📞 0299 - 155354195</p>
+          </div>
+        </div>
+        <div class="date-info">
+          <div class="field ocultar-si-vacio" x-bind:hidden="!form.nroParte">
+            <i class="fa fa-hashtag"></i>
+            <input type="text" placeholder="N° Parte Diario" x-model="form.nroParte">
+          </div>
+          <div class="field ocultar-si-vacio" x-bind:hidden="!form.fecha">
+            <i class="fa fa-calendar-alt"></i>
+            <input type="date" x-model="form.fecha">
+          </div>
+        </div>
+        <div class="logo-wrapper">
+          <img src="logo_cliente.png" alt="Logo Cliente" class="logo">
+        </div>
+      </div>
+
+      <div class="section">
+        <h2><i class="fa fa-id-card"></i> Datos del Cliente</h2>
+        <div class="field ocultar-si-vacio" x-bind:hidden="!form.cliente">
+          <i class="fa fa-user-tie"></i>
+          <label>Cliente:</label>
+          <select x-model="form.cliente">
+            <option value="">-- Seleccionar cliente --</option>
+            <option>YPF</option>
+          </select>
+        </div>
+        <div class="field ocultar-si-vacio" x-bind:hidden="!form.proyecto">
+          <i class="fa fa-project-diagram"></i>
+          <label>Proyecto:</label>
+          <select x-model="form.proyecto">
+            <option value="">-- Seleccionar proyecto --</option>
+            <option>281 Obras Puntuales</option>
+          </select>
+        </div>
+        <div class="field ocultar-si-vacio" x-bind:hidden="!form.contacto">
+          <i class="fa fa-user"></i>
+          <label>Supervisor en campo:</label>
+          <select x-model="form.contacto">
+            <option value="">-- Seleccionar supervisor --</option>
+            <option>Federico Infante</option>
+            <option>Martin Lira</option>
+            <option>Pablo Fernandez</option>
+            <option>Idaldis Torres</option>
+          </select>
+        </div>
+        <div class="field ocultar-si-vacio" x-bind:hidden="!form.locacion">
+          <i class="fa fa-map-marker-alt"></i>
+          <label>Locación:</label>
+          <select x-model="form.locacion">
+            <option value="">-- Seleccionar --</option>
+            <option>ADCH (Aguada del Chañar)</option>
+            <option>BND (Bandurria Sur)</option>
+            <option>LACH (La Amarga Chica)</option>
+            <option>LAJES (La Angostura Sur)</option>
+            <option>LC (Loma Campana)</option>
+            <option>ADLA (Aguada de la Arena)</option>
+            <option>BDT (Bajo del Toro)</option>
+            <option>EOR (El Orejano)</option>
+            <option>LRI (La Rivera)</option>
+            <option>RDM (Rincón del Mangrullo)</option>
+            <option>RNQ (Río Neuquén)</option>
+            <option>ZCL (Sierra Barrosa)</option>
+          </select>
+        </div>
+        <div class="field ocultar-si-vacio" x-bind:hidden="!form.noconvencional">
+          <i class="fa fa-map"></i>
+          <label>No Convencional:</label>
+          <select x-model="form.noconvencional">
+            <option value="">-- Seleccionar --</option>
+            <option>NOC ESTE</option>
+            <option>NOC OESTE</option>
+          </select>
+        </div>
+        <div class="field ocultar-si-vacio" x-bind:hidden="!form.neuquen">
+          <i class="fa fa-globe"></i>
+          <label>Neuquén:</label>
+          <select x-model="form.neuquen">
+            <option value="">-- Seleccionar --</option>
+            <option>Neuquén</option>
+          </select>
+        </div>
+      </div>
+      <div class="section">
+        <h2><i class="fa fa-users"></i> Información Técnica de Campo</h2>
+        <div class="field ocultar-si-vacio" x-bind:hidden="!form.fusionador">
+          <i class="fa fa-user"></i>
+          <label>Fusionador:</label>
+          <select x-model="form.fusionador">
+            <option value="">-- Seleccionar fusionador --</option>
+            <option>David Palacios</option>
+          </select>
+        </div>
+        <div class="field ocultar-si-vacio" x-bind:hidden="!form.tecnico">
+          <i class="fa fa-user"></i>
+          <label>Técnico:</label>
+          <select x-model="form.tecnico">
+            <option value="">-- Seleccionar técnico --</option>
+            <option>Leandro Rios</option>
+          </select>
+        </div>
+        <div class="field ocultar-si-vacio" x-bind:hidden="!form.ayudante">
+          <i class="fa fa-user"></i>
+          <label>Ayudante:</label>
+          <select x-model="form.ayudante">
+            <option value="">-- Seleccionar ayudante --</option>
+            <option>Leandro Rios</option>
+          </select>
+        </div>
+        <div class="field ocultar-si-vacio" x-bind:hidden="!form.supervisor">
+          <i class="fa fa-user-tie"></i>
+          <label>Supervisor:</label>
+          <select x-model="form.supervisor">
+            <option value="">-- Seleccionar supervisor --</option>
+            <option>Diego Sisto</option>
+            <option>Emilio Gelormino</option>
+            <option>Marcos Monacci</option>
+            <option>Leandro Poblete</option>
+            <option>Gabriel Barrera</option>
+          </select>
+        </div>
+        <div class="field ocultar-si-vacio" x-bind:hidden="!form.patente">
+          <i class="fa fa-id-card"></i>
+          <label>Patente:</label>
+          <select x-model="form.patente">
+            <option value="">-- Seleccionar vehículo --</option>
+            <option>FIAT STRADA ADVENTURE AA-135-VD · INTERNO 01</option>
+            <option>RENAULT CLIO MIO WORK AA-018-YQ · INTERNO 02</option>
+            <option>FORD CAMIÓN F400 AC-087-SC · INTERNO 05</option>
+            <option>TOYOTA HILUX DC 4X2 AD-304-TB · INTERNO 06</option>
+            <option>TOYOTA HILUX DC 4X2 AD-304-TC · INTERNO 07</option>
+            <option>TOYOTA HILUX DC 4X2 AE-938-VF · INTERNO 08</option>
+            <option>IVECO TRACTOR ATTACK 4100 AF-015-JC · INTERNO 09</option>
+            <option>TOYOTA ETIOS 1 AF-441-FP · INTERNO 10</option>
+            <option>TOYOTA HILUX DC 4X4 AF-623-SQ · INTERNO 11</option>
+            <option>TOYOTA ETIOS AF-700-MH · INTERNO 12</option>
+            <option>TOYOTA HILUX DC 4X2 AG-080-CI · INTERNO 13</option>
+            <option>TOYOTA HILUX DC 4X2 AG-426-PI · INTERNO 14</option>
+            <option>TOYOTA HILUX DC 4X2 AH-096-RZ · INTERNO 15</option>
+          </select>
+        </div>
+        <div class="field ocultar-si-vacio" x-bind:hidden="!form.horaInicio">
+          <i class="fa fa-play"></i>
+          <label>Inicio Actividad:</label>
+          <input type="time" x-model="form.horaInicio">
+        </div>
+        <div class="field ocultar-si-vacio" x-bind:hidden="!form.horaFin">
+          <i class="fa fa-stop"></i>
+          <label>Fin Actividad:</label>
+          <input type="time" x-model="form.horaFin">
+        </div>
+      </div>
+
+      <div class="section">
+        <h2><i class="fa fa-map-location-dot"></i> Sector Intervenido</h2>
+        <div class="field ocultar-si-vacio" x-bind:hidden="!form.shelter">
+          <i class="fa fa-hashtag"></i>
+          <label>Shelter:</label>
+          <input type="text" x-model="form.shelter">
+        </div>
+        <div class="field ocultar-si-vacio" x-bind:hidden="!form.botella">
+          <i class="fa fa-cube"></i>
+          <label>Botella:</label>
+          <input type="text" x-model="form.botella">
+        </div>
+        <div class="field ocultar-si-vacio" x-bind:hidden="!form.tablero">
+          <i class="fa fa-server"></i>
+          <label>Tablero:</label>
+          <input type="text" x-model="form.tablero">
+        </div>
+      </div>
+      <div class="section">
+        <h2><i class="fa fa-tools"></i> Actividad Principal Ejecutada</h2>
+        <div class="field ocultar-si-vacio" x-bind:hidden="!form.tipoTrabajo">
+          <i class="fa fa-tasks"></i>
+          <label>Tipo de Trabajo:</label>
+          <select x-model="form.tipoTrabajo" @change="cargarMateriales">
+            <option value="">-- Seleccionar --</option>
+            <template x-for="(label, key) in trabajos"><option :value="key" x-text="label"></option></template>
+            <option value="limpieza">Limpieza</option>
+            <option value="relevamiento">Relevamiento</option>
+            <option value="recorrido">Recorrido</option>
+          </select>
+        </div>
+
+        <template x-if="form.tipoTrabajo === 'limpieza' || form.tipoTrabajo === 'relevamiento' || form.tipoTrabajo === 'recorrido'">
+          <div class="field ocultar-si-vacio" x-bind:hidden="!form.observacionesTrabajoExtra" style="align-items: flex-start;">
+            <i class="fa fa-sticky-note"></i>
+            <label>Observaciones:</label>
+            <textarea x-model="form.observacionesTrabajoExtra" rows="8" placeholder="Detalle de la actividad realizada" style="flex: 1; resize: vertical;"></textarea>
+          </div>
+        </template>
+
+        <template x-if="form.tipoTrabajo !== 'limpieza' && form.tipoTrabajo !== 'relevamiento' && form.tipoTrabajo !== 'recorrido'">
+          <div class="bloque-dos-columnas">
+            <template x-for="(material, index) in materialesSeleccionados.slice(0, 8)" :key="index">
+              <div class="item-material" x-bind:hidden="!form.materiales[index] || (!form.materiales[index].cantidad && !form.materiales[index].opcion && !form.materiales[index].obs)">
+                <label x-text="material.label"></label>
+                <template x-if="material.opciones">
+                  <select x-model="form.materiales[index].opcion">
+                    <option value="">-- Seleccionar --</option>
+                    <template x-for="opt in material.opciones"><option x-text="opt"></option></template>
+                  </select>
+                </template>
+                <template x-if="!material.opciones">
+                  <input type="number" x-model="form.materiales[index].cantidad" placeholder="Cantidad" />
+                </template>
+                <input type="text" x-model="form.materiales[index].obs" placeholder="Observaciones" />
+              </div>
+            </template>
+          </div>
+        </template>
+      </div>
+
+      <div class="section">
+        <h2><i class="fa fa-tools"></i> Actividad Principal Ejecutada (2)</h2>
+        <div class="field ocultar-si-vacio" x-bind:hidden="!form.tipoTrabajoExtra2">
+          <i class="fa fa-tasks"></i>
+          <label>Tipo de Trabajo:</label>
+          <select x-model="form.tipoTrabajoExtra2" @change="cargarMaterialesExtra2">
+            <option value="">-- Seleccionar --</option>
+            <template x-for="(label, key) in trabajos"><option :value="key" x-text="label"></option></template>
+            <option value="limpieza">Limpieza</option>
+            <option value="relevamiento">Relevamiento</option>
+            <option value="recorrido">Recorrido</option>
+          </select>
+        </div>
+
+        <template x-if="form.tipoTrabajoExtra2 === 'limpieza' || form.tipoTrabajoExtra2 === 'relevamiento' || form.tipoTrabajoExtra2 === 'recorrido'">
+          <div class="field ocultar-si-vacio" x-bind:hidden="!form.observacionesExtra2" style="align-items: flex-start;">
+            <i class="fa fa-sticky-note"></i>
+            <label>Observaciones:</label>
+            <textarea x-model="form.observacionesExtra2" rows="8" placeholder="Detalle de la actividad realizada" style="flex: 1; resize: vertical;"></textarea>
+          </div>
+        </template>
+
+        <template x-if="form.tipoTrabajoExtra2 !== 'limpieza' && form.tipoTrabajoExtra2 !== 'relevamiento' && form.tipoTrabajoExtra2 !== 'recorrido'">
+          <div class="bloque-dos-columnas">
+            <template x-for="(material, index) in materialesExtraSeleccionados2.slice(0, 8)" :key="index">
+              <div class="item-material" x-bind:hidden="!form.materialesExtra2[index] || (!form.materialesExtra2[index].cantidad && !form.materialesExtra2[index].opcion && !form.materialesExtra2[index].obs)">
+                <label x-text="material.label"></label>
+                <template x-if="material.opciones">
+                  <select x-model="form.materialesExtra2[index].opcion">
+                    <option value="">-- Seleccionar --</option>
+                    <template x-for="opt in material.opciones"><option x-text="opt"></option></template>
+                  </select>
+                </template>
+                <template x-if="!material.opciones">
+                  <input type="number" x-model="form.materialesExtra2[index].cantidad" placeholder="Cantidad" />
+                </template>
+                <input type="text" x-model="form.materialesExtra2[index].obs" placeholder="Observaciones" />
+              </div>
+            </template>
+          </div>
+        </template>
+      </div>
+      <div class="section">
+        <h2><i class="fa fa-tools"></i> Actividad Principal Ejecutada (3)</h2>
+        <div class="field ocultar-si-vacio" x-bind:hidden="!form.tipoTrabajoExtra3">
+          <i class="fa fa-tasks"></i>
+          <label>Tipo de Trabajo:</label>
+          <select x-model="form.tipoTrabajoExtra3" @change="cargarMaterialesExtra3">
+            <option value="">-- Seleccionar --</option>
+            <template x-for="(label, key) in trabajos"><option :value="key" x-text="label"></option></template>
+            <option value="limpieza">Limpieza</option>
+            <option value="relevamiento">Relevamiento</option>
+            <option value="recorrido">Recorrido</option>
+          </select>
+        </div>
+
+        <template x-if="form.tipoTrabajoExtra3 === 'limpieza' || form.tipoTrabajoExtra3 === 'relevamiento' || form.tipoTrabajoExtra3 === 'recorrido'">
+          <div class="field ocultar-si-vacio" x-bind:hidden="!form.observacionesExtra3" style="align-items: flex-start;">
+            <i class="fa fa-sticky-note"></i>
+            <label>Observaciones:</label>
+            <textarea x-model="form.observacionesExtra3" rows="8" placeholder="Detalle de la actividad realizada" style="flex: 1; resize: vertical;"></textarea>
+          </div>
+        </template>
+
+        <template x-if="form.tipoTrabajoExtra3 !== 'limpieza' && form.tipoTrabajoExtra3 !== 'relevamiento' && form.tipoTrabajoExtra3 !== 'recorrido'">
+          <div class="bloque-dos-columnas">
+            <template x-for="(material, index) in materialesExtraSeleccionados3.slice(0, 8)" :key="index">
+              <div class="item-material" x-bind:hidden="!form.materialesExtra3[index] || (!form.materialesExtra3[index].cantidad && !form.materialesExtra3[index].opcion && !form.materialesExtra3[index].obs)">
+                <label x-text="material.label"></label>
+                <template x-if="material.opciones">
+                  <select x-model="form.materialesExtra3[index].opcion">
+                    <option value="">-- Seleccionar --</option>
+                    <template x-for="opt in material.opciones"><option x-text="opt"></option></template>
+                  </select>
+                </template>
+                <template x-if="!material.opciones">
+                  <input type="number" x-model="form.materialesExtra3[index].cantidad" placeholder="Cantidad" />
+                </template>
+                <input type="text" x-model="form.materialesExtra3[index].obs" placeholder="Observaciones" />
+              </div>
+            </template>
+          </div>
+        </template>
+      </div>
+
+      <div class="section" x-init="inicializarMapa()">
+        <h2><i class="fa fa-map-marker-alt"></i> Ubicación Automática</h2>
+        <div class="field ocultar-si-vacio" x-bind:hidden="!form.ubicacion">
+          <i class="fa fa-location-arrow"></i>
+          <label>GPS:</label>
+          <input type="text" x-model="form.ubicacion">
+        </div>
+        <div id="map"></div>
+      </div>
+
+      <div class="section">
+        <h2><i class="fa fa-images"></i> Registro Fotográfico Documental</h2>
+        <div class="field">
+          <i class="fa fa-upload"></i>
+          <label>Subir Imágenes:</label>
+          <input type="file" multiple accept="image/*" @change="mostrarVarias($event)">
+        </div>
+        <div class="mensaje-ok" x-text="mensajeImagenes"></div>
+        <div class="images-grid" id="galeria"></div>
+      </div>
+
+      <div class="section">
+        <h2><i class="fa fa-pen"></i> Firma del Cliente</h2>
+        <div class="field" style="justify-content: space-between;">
+          <div style="flex: 1; min-width: 200px;">
+            <i class="fa fa-signature"></i>
+            <label>Firma digital:</label>
+            <input type="file" accept="image/*" @change="cargarFirma($event)">
+          </div>
+          <div style="width: 300px; height: 300px; margin-left: 20px; border: 2px dashed #1565c0; border-radius: 6px; background: #f5f7fa; display: flex; align-items: center; justify-content: center;">
+            <template x-if="firmaImagen">
+              <div x-html="firmaImagen"></div>
+            </template>
+            <template x-if="!firmaImagen">
+              <span style="color:#777; font-size:14px;">Aún sin firma</span>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; align-items: center;">
+        <button onclick="window.print()" class="pdf-btn">
+          <i class="fa fa-print"></i> Imprimir PDF
+        </button>
+        
+      </div>
+      <button @click="enviarDatos()" class="pdf-btn">
+  <i class="fa fa-file-export"></i> Guardar en Excel
+</button>
+
+
+
+      <div class="pdf-help">
+        📱 <strong>¿Usás celular en campo?</strong> Al tocar <em>“Imprimir PDF”</em>, seleccioná <strong>“Guardar como PDF”</strong> si está disponible. Si no, usá la opción <strong>“Compartir”</strong> para enviarlo por WhatsApp o correo.
+      </div>
+    </div>
+  </div>
+<script>
+  function formApp() {
+    return {
+      form: {
+        nroParte: '', fecha: '', cliente: '', proyecto: '', contacto: '', locacion: '', noconvencional: '', neuquen: '',
+        fusionador: '', tecnico: '', ayudante: '', supervisor: '', patente: '', horaInicio: '', horaFin: '',
+        shelter: '', botella: '', tablero: '', tipoTrabajo: '', observacionesTrabajoExtra: '', materiales: [],
+        tipoTrabajoExtra2: '', observacionesExtra2: '', materialesExtra2: [],
+        tipoTrabajoExtra3: '', observacionesExtra3: '', materialesExtra3: [],
+        firmaNombre: '', firmaID: '', ubicacion: ''
+      },
+      trabajos: {
+        'tendido': 'Tendido de fibra óptica',
+        'empalpe': 'Empalme por fusión',
+        'medicion': 'Medición y certificación',
+        'reparacion': 'Reparación de cortes',
+        'botella': 'Armado de botella de empalme',
+        'odf': 'Armado de ODF',
+        'mini_odf': 'Armado de Mini ODF'
+      },
+      materialesPorTrabajo: {
+        'tendido': [
+          { label: 'Cod 178 F.O SM 12 Hilos', opciones: null },
+          { label: 'Cod 179 F.O SM 24 Hilos', opciones: null },
+          { label: 'Cod 180 F.O MM 12 Hilos', opciones: null },
+          { label: 'Cod 181 F.O MM 24 Hilos', opciones: null },
+          { label: 'Metros Utilizados', opciones: null },
+          { label: 'Tipo de Tendido', opciones: ['Canalizado', 'Aéreo'] }
+        ],
+        'empalpe': [
+          { label: 'Cantidad de Fusiones', opciones: null },
+          { label: 'Manguitos', opciones: ['Cod 169 Manguito de empalme 40 MM', 'Cod 169 Manguito de empalme 60 MM'] }
+        ],
+        'medicion': [
+          { label: 'Tipo de Medición', opciones: ['OTDR', 'Power Meter', 'Fuente Óptica'] },
+          { label: 'Resultado', opciones: null },
+          { label: 'Hora de Inicio', opciones: null },
+          { label: 'Hora de Fin', opciones: null },
+          { label: 'Observaciones', opciones: null }
+        ],
+        'reparacion': [
+          { label: 'Cod 178 F.O SM 12 Hilos', opciones: null },
+          { label: 'Cod 179 F.O SM 24 Hilos', opciones: null },
+          { label: 'Cod 180 F.O MM 12 Hilos', opciones: null },
+          { label: 'Cod 181 F.O MM 24 Hilos', opciones: null },
+          { label: 'Metros Utilizados', opciones: null },
+          { label: 'Tipo de Tendido', opciones: ['Canalizado', 'Aéreo'] }
+        ],
+        'botella': [
+          { label: 'Cod 169 Manguitos de Empalme 40 MM', opciones: null },
+          { label: 'Cod 169 Manguitos de Empalme 60 MM', opciones: null },
+          { label: 'Cantidad de Fusiones', opciones: null }
+        ],
+        'odf': [
+          { label: 'Cod 164 PigTail SM LC/UPC 1.5 Mtrs', opciones: null },
+          { label: 'Cod 165 Pigtail SM OS2 SC/PC 2 Mtrs', opciones: null },
+          { label: 'Cod 166 Pigtail SM OS2 SC/APC 2 Mtrs', opciones: null },
+          { label: 'Cod 167 Pigtail SM OS2 LC 2 Mtrs', opciones: null },
+          { label: 'Cod 168 Pigtail MM OM3 LC 2 Mtrs', opciones: null },
+          { label: 'Cod 169 Manguito de Empalme 40 MM', opciones: null },
+          { label: 'Cod 169 Manguito de Empalme 60 MM', opciones: null },
+          { label: 'Cod 174 Cassette Porta Fusión 12 Fibras', opciones: null },
+          { label: 'Cod 175 Cassette Porta Fusión 24 Fibras', opciones: null },
+          { label: 'Cod 176 Cassette Porta Fusión 48 Fibras Stack', opciones: null },
+          { label: 'Cod 163 Acopladores SM LC/UPC', opciones: null }
+        ],
+        'mini_odf': [
+          { label: 'Cod 164 PigTail SM LC/UPC 1.5 Mtrs', opciones: null },
+          { label: 'Cod 165 Pigtail SM OS2 SC/PC 2 Mtrs', opciones: null },
+          { label: 'Cod 166 Pigtail SM OS2 SC/APC 2 Mtrs', opciones: null },
+          { label: 'Cod 167 Pigtail SM OS2 LC 2 Mtrs', opciones: null },
+          { label: 'Cod 168 Pigtail MM OM3 LC 2 Mtrs', opciones: null },
+          { label: 'Cod 169 Manguito de Empalme 40 MM', opciones: null },
+          { label: 'Cod 169 Manguito de Empalme 60 MM', opciones: null },
+          { label: 'Cod 174 Cassette Porta Fusión 12 Fibras', opciones: null }
+        ]
+      },
+      materialesSeleccionados: [],
+      materialesExtraSeleccionados2: [],
+      materialesExtraSeleccionados3: [],
+      firmaImagen: '',
+      mensajeImagenes: '',
+      cargarFirma(event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = e => {
+            this.firmaImagen = `<img src="${e.target.result}" style="max-width:100%; max-height:100%;">`;
+          };
+          reader.readAsDataURL(file);
+        }
+      },
+      mostrarVarias(event) {
+        const galeria = document.getElementById('galeria');
+        galeria.innerHTML = '';
+        Array.from(event.target.files).forEach(file => {
+          const reader = new FileReader();
+          reader.onload = e => {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            galeria.appendChild(img);
+          };
+          reader.readAsDataURL(file);
+        });
+      },
+      cargarMateriales() {
+        const lista = this.materialesPorTrabajo[this.form.tipoTrabajo] || [];
+        this.materialesSeleccionados = lista;
+        this.form.materiales = lista.map(() => ({ cantidad: '', obs: '', opcion: '' }));
+      },
+      cargarMaterialesExtra2() {
+        const lista = this.materialesPorTrabajo[this.form.tipoTrabajoExtra2] || [];
+        this.materialesExtraSeleccionados2 = lista;
+        this.form.materialesExtra2 = lista.map(() => ({ cantidad: '', obs: '', opcion: '' }));
+      },
+      cargarMaterialesExtra3() {
+        const lista = this.materialesPorTrabajo[this.form.tipoTrabajoExtra3] || [];
+        this.materialesExtraSeleccionados3 = lista;
+        this.form.materialesExtra3 = lista.map(() => ({ cantidad: '', obs: '', opcion: '' }));
+      },
+
+      // 🟩 FUNCIÓN NUEVA PEGADA AQUÍ 👇
+      enviarDatos() {
+        fetch("https://script.google.com/macros/s/AKfycbzSgJIelKuF3UNbIW6opyJOm6gJkBnCaOOfy28qaR5AYsVUSON8w1hGiUJsnRNGZIyz3w/exec", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(this.form)
+        })
+        .then(res => res.text())
+        .then(txt => {
+          alert("✅ Parte diario guardado en Google Sheets correctamente");
+        })
+        .catch(err => {
+          alert("⚠️ Error al guardar: " + err.message);
+        });
+      },
+
+      inicializarMapa() {
+        if (!navigator.geolocation) {
+          alert("Geolocalización no soportada por este navegador.");
+          return;
+        }
+        navigator.geolocation.getCurrentPosition(pos => {
+          const { latitude, longitude } = pos.coords;
+          this.form.ubicacion = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+          const map = L.map('map').setView([latitude, longitude], 15);
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+          }).addTo(map);
+          L.marker([latitude, longitude]).addTo(map).bindPopup("Ubicación actual").openPopup();
+        }, err => {
+          alert("Error al obtener ubicación: " + err.message);
+        });
+      }
+    };
+  }
+</script>
+</body>
+</html>
